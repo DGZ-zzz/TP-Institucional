@@ -10,7 +10,9 @@ const PORT = process.env.PORT || 3000;
 // --- Middleware ---
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
+
+// Servir archivos estáticos desde la carpeta 'public'
+app.use(express.static(path.join(__dirname, 'public')));
 
 // --- Base de datos SQLite ---
 const db = new Database('./database.db');
@@ -47,7 +49,7 @@ app.post('/api/alumnos', (req, res) => {
 
 // --- Ruta principal ---
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // --- Iniciar servidor ---
