@@ -10,18 +10,14 @@ const PORT = process.env.PORT || 3000;
 // --- Middleware ---
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname)); // sirve index.html y demás archivos
+app.use(express.static(path.join(__dirname, 'public')));
 
 // --- Base de datos SQLite ---
 const db = new sqlite3.Database('./database.db', (err) => {
-  if (err) {
-    console.error('❌ Error al conectar con la base de datos:', err.message);
-  } else {
-    console.log('✅ Base de datos SQLite conectada.');
-  }
+  if (err) console.error('❌ Error al conectar con la base de datos:', err.message);
+  else console.log('✅ Base de datos SQLite conectada.');
 });
 
-// Crear tabla si no existe (actualizada con los nuevos campos)
 db.run(`
   CREATE TABLE IF NOT EXISTS alumnos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,10 +52,10 @@ app.post('/api/alumnos', (req, res) => {
   );
 });
 
-// --- Ruta principal para servir la web ---
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+// --- Ruta principal para servir la app ---
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // --- Iniciar servidor ---
-app.listen(PORT, () => console.log(`🚀 Servidor funcionando en http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Servidor funcionando en puerto ${PORT}`));
