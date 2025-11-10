@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Institución Ficticia</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { background-color: #f3f6fa; color: #333; }
+    header { background-color: #1e88e5; color: white; padding: 15px; display: flex; justify-content: space-around; align-items: center; }
+    header h1 { font-size: 22px; }
+    nav a { color: white; margin: 0 10px; text-decoration: none; font-weight: bold; cursor: pointer; }
+    nav a:hover { text-decoration: underline; }
+
+    section { display: none; padding: 20px; }
+    section.active { display: block; }
+
+    /* Home */
+    #weather-container {
+      background: white; padding: 20px; border-radius: 10px; max-width: 400px;
+      margin: 20px auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;
+    }
+    #weather-container img { width: 60px; }
+    .search-box { display: flex; justify-content: center; margin-top: 10px; }
+    .search-box input {
+      flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 6px 0 0 6px; outline: none;
+    }
+    .search-box button {
+      padding: 8px 12px; border: none; background: #1e88e5; color: white;
+      border-radius: 0 6px 6px 0; cursor: pointer;
+    }
+    .search-box button:hover { background: #1565c0; }
+
+    /* Formulario */
+    form { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    label { display: block; margin: 10px 0 5px; }
+    input, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+    button { margin-top: 15px; padding: 10px 15px; background-color: #1e88e5; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background-color: #1565c0; }
+
+    /* Tabla */
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background-color: #1e88e5; color: white; }
+
+    /* Historia / IA */
+    .text-section { max-width: 800px; margin: 20px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .image-space { width: 100%; height: 200px; border: 2px dashed #ccc; margin-top: 15px; border-radius: 10px; text-align: center; line-height: 200px; color: #aaa; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Institución Ficticia</h1>
+  <nav>
+    <a onclick="showSection('home')">Home</a>
+    <a onclick="showSection('cargar')">Cargar Alumno</a>
+    <a onclick="showSection('listar')">Listar Alumnos</a>
+    <a onclick="showSection('historia')">Historia</a>
+    <a onclick="showSection('ia')">Info IA</a>
+  </nav>
+</header>
+
+<!-- HOME -->
+<section id="home" class="active">
+  <h2>Clima actual</h2>
+  <div id="weather-container">
+    <p id="loading">Cargando clima de Posadas, Misiones...</p>
+    <div id="weather-info" style="display:none;">
+      <h3 id="city-name"></h3>
+      <img id="icon" src="" alt="">
+      <p><strong id="temp"></strong></p>
+      <p id="desc"></p>
+    </div>
+    <div class="search-box">
+      <input type="text" id="city-input" placeholder="Buscar otra ciudad...">
+      <button onclick="buscarCiudad()">Buscar</button>
+    </div>
+  </div>
+</section>
+
+<!-- CARGAR ALUMNO -->
+<section id="cargar">
+  <h2>Cargar Alumno</h2>
+  <form id="formAlumno">
+    <label>Nombre:</label>
+    <input type="text" id="nombre" required>
+    <label>Apellido:</label>
+    <input type="text" id="apellido" required>
+    <label>DNI:</label>
+    <input type="number" id="dni" required>
+    <label>Curso:</label>
+    <select id="curso" required>
+      <option value="">Seleccione un curso</option>
+      <option>1°A</option><option>1°B</option>
+      <option>2°A</option><option>2°B</option>
+      <option>3°A</option><option>3°B</option>
+      <option>4°A</option><option>4°B</option>
+      <option>5°A</option><option>5°B</option>
+    </select>
+    <label>Email:</label>
+    <input type="email" id="email" required>
+    <button type="submit">Guardar Alumno</button>
+  </form>
+</section>
+
+<!-- LISTAR ALUMNOS -->
+<section id="listar">
+  <h2>Listado de Alumnos</h2>
+  <label for="buscadorCurso">Filtrar por curso:</label>
+  <select id="buscadorCurso" onchange="filtrarPorCurso()">
+    <option value="">Todos los cursos</option>
+    <option>1°A</option><option>1°B</option>
+    <option>2°A</option><option>2°B</option>
+    <option>3°A</option><option>3°B</option>
+    <option>4°A</option><option>4°B</option>
+    <option>5°A</option><option>5°B</option>
+  </select>
+
+  <table id="tablaAlumnos">
+    <thead>
+      <tr><th>Nombre</th><th>Apellido</th><th>DNI</th><th>Curso</th><th>Email</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<!-- HISTORIA -->
+<section id="historia">
+  <div class="text-section">
+    <h2>Historia de la Institución</h2>
+    <p>
+      Fundada en 1985, la Institución Ficticia nació con el objetivo de brindar educación de calidad e inclusiva.
+      A lo largo de los años, ha formado generaciones de estudiantes comprometidos con la comunidad.
+    </p>
+    <div class="image-space">Espacio para imagen</div>
+  </div>
+</section>
+
+<!-- INFO IA -->
+<section id="ia">
+  <div class="text-section">
+    <h2>¿Qué es la IA Generativa?</h2>
+    <p>
+      La IA generativa puede crear contenido nuevo —como texto o imágenes— aprendiendo de grandes cantidades de datos.
+      Ejemplos incluyen ChatGPT, DALL·E y otros modelos que permiten automatizar tareas creativas.
+    </p>
+    <ul>
+      <li>📚 “Explicá este concepto como si tuviera 10 años.”</li>
+      <li>💡 “Dame ideas creativas para un proyecto escolar.”</li>
+    </ul>
+    <div class="image-space">Espacio para imagen</div>
+  </div>
+</section>
+
+<script>
+  // --- Navegación ---
+  function showSection(id) {
+    document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  }
+
+  // --- Clima ---
+  const apiKey = "c5d20c99b622fbdc6ec654f3f5477b79";
+  async function obtenerClima(ciudad = "Posadas,AR") {
+    const loading = document.getElementById("loading");
+    const info = document.getElementById("weather-info");
+    loading.style.display = "block";
+    info.style.display = "none";
+    try {
+      const resp = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(ciudad)}&units=metric&lang=es&appid=${apiKey}`);
+      if (!resp.ok) throw new Error("Ciudad no encontrada");
+      const data = await resp.json();
+      document.getElementById("city-name").innerText = `${data.name}, ${data.sys.country}`;
+      document.getElementById("temp").innerText = Math.round(data.main.temp) + "°C";
+      document.getElementById("desc").innerText = data.weather[0].description;
+      document.getElementById("icon").src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+      loading.style.display = "none";
+      info.style.display = "block";
+    } catch (error) {
+      loading.innerText = "⚠️ No se pudo obtener el clima.";
+    }
+  }
+  function buscarCiudad() {
+    const city = document.getElementById("city-input").value.trim();
+    if (city) obtenerClima(city);
+  }
+  obtenerClima();
+
+  // --- Conexión Backend Node.js ---
+  async function cargarAlumnos() {
+    const res = await fetch('/api/alumnos');
+    const data = await res.json();
+    const tbody = document.querySelector("#tablaAlumnos tbody");
+    tbody.innerHTML = "";
+    data.forEach(a => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${a.nombre}</td><td>${a.apellido}</td><td>${a.dni}</td><td>${a.curso}</td><td>${a.email}</td>`;
+      tbody.appendChild(tr);
+    });
+    window.listaAlumnos = data;
+  }
+
+  async function guardarAlumno(e) {
+    e.preventDefault();
+    const alumno = {
+      nombre: document.getElementById('nombre').value.trim(),
+      apellido: document.getElementById('apellido').value.trim(),
+      dni: document.getElementById('dni').value.trim(),
+      curso: document.getElementById('curso').value.trim(),
+      email: document.getElementById('email').value.trim()
+    };
+    if (!alumno.nombre || !alumno.apellido || !alumno.dni || !alumno.curso || !alumno.email)
+      return alert("Complete todos los campos.");
+
+    const res = await fetch('/api/alumnos', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(alumno)
+    });
+
+    if (res.ok) {
+      alert("Alumno guardado correctamente.");
+      document.getElementById('formAlumno').reset();
+      cargarAlumnos();
+    } else {
+      alert("Error al guardar alumno.");
+    }
+  }
+
+  function filtrarPorCurso() {
+    const cursoSeleccionado = document.getElementById("buscadorCurso").value;
+    const tbody = document.querySelector("#tablaAlumnos tbody");
+    tbody.innerHTML = "";
+    (window.listaAlumnos || []).filter(a =>
+      !cursoSeleccionado || a.curso === cursoSeleccionado
+    ).forEach(a => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${a.nombre}</td><td>${a.apellido}</td><td>${a.dni}</td><td>${a.curso}</td><td>${a.email}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById("formAlumno").addEventListener("submit", guardarAlumno);
+  cargarAlumnos();
+</script>
+
+</body>
+</html>
